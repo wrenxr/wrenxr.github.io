@@ -1,0 +1,349 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>JSR303 | wrenxr's blog</title><meta name="author" content="wrenxr"><meta name="copyright" content="wrenxr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="简介JSR是Java Specification Requests的缩写，意思是Java 规范提案。 JSR-303 是JAVA EE 6 中的一项子规范，叫做Bean Validation，为Bean验证定义了元数据模型和API。 默认的元数据模型是通过Annotations来描述的，但是也可以使用XML来重载或者扩展。 常用校验注解 Bean Validation 中内置的 constrain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSR303">
+<meta property="og:url" content="https://wrenxr.github.io/2024/04/23/20240423-JSR303/index.html">
+<meta property="og:site_name" content="wrenxr&#39;s blog">
+<meta property="og:description" content="简介JSR是Java Specification Requests的缩写，意思是Java 规范提案。 JSR-303 是JAVA EE 6 中的一项子规范，叫做Bean Validation，为Bean验证定义了元数据模型和API。 默认的元数据模型是通过Annotations来描述的，但是也可以使用XML来重载或者扩展。 常用校验注解 Bean Validation 中内置的 constrain">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/JSR303.png">
+<meta property="article:published_time" content="2024-04-23T12:55:38.000Z">
+<meta property="article:modified_time" content="2024-04-23T12:56:36.929Z">
+<meta property="article:author" content="wrenxr">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/JSR303.png"><link rel="shortcut icon" href="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/cat.svg"><link rel="canonical" href="https://wrenxr.github.io/2024/04/23/20240423-JSR303/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>(()=>{
+      const saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+      
+      window.btf = {
+        saveToLocal: saveToLocal,
+        getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = url
+          script.async = true
+          script.onerror = reject
+          script.onload = script.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            script.onload = script.onreadystatechange = null
+            resolve()
+          }
+
+          Object.keys(attr).forEach(key => {
+            script.setAttribute(key, attr[key])
+          })
+
+          document.head.appendChild(script)
+        }),
+
+        getCSS: (url, id = false) => new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.href = url
+          if (id) link.id = id
+          link.onerror = reject
+          link.onload = link.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            link.onload = link.onreadystatechange = null
+            resolve()
+          }
+          document.head.appendChild(link)
+        }),
+
+        addGlobalFn: (key, fn, name = false, parent = window) => {
+          const pjaxEnable = false
+          if (!pjaxEnable && key.startsWith('pjax')) return
+
+          const globalFn = parent.globalFn || {}
+          const keyObj = globalFn[key] || {}
+    
+          if (name && keyObj[name]) return
+    
+          name = name || Object.keys(keyObj).length
+          keyObj[name] = fn
+          globalFn[key] = keyObj
+          parent.globalFn = globalFn
+        }
+      }
+    
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+      
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })()</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'JSR303',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-23 20:56:36'
+}</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/Penguin-green.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/JSR303.png')"><nav id="nav"><span id="blog-info"><a href="/" title="wrenxr's blog"><span class="site-name">wrenxr's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">JSR303</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-23T12:55:38.000Z" title="发表于 2024-04-23 20:55:38">2024-04-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-23T12:56:36.929Z" title="更新于 2024-04-23 20:56:36">2024-04-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="JSR303"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/04/23/20240423-JSR303/#post-comment"><span class="waline-comment-count" data-path="/2024/04/23/20240423-JSR303/"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>JSR是Java Specification Requests的缩写，意思是Java 规范提案。</p>
+<p>JSR-303 是JAVA EE 6 中的一项子规范，叫做Bean Validation，为Bean验证定义了元数据模型和API。</p>
+<p>默认的元数据模型是通过Annotations来描述的，但是也可以使用XML来重载或者扩展。</p>
+<h1 id="常用校验注解"><a href="#常用校验注解" class="headerlink" title="常用校验注解"></a>常用校验注解</h1><ol>
+<li><p>Bean Validation 中内置的 constraint</p>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>详细信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Null</td>
+<td>被注释的元素必须为 null</td>
+</tr>
+<tr>
+<td>@NotNull</td>
+<td>被注释的元素必须不为 null</td>
+</tr>
+<tr>
+<td>@AssertTrue</td>
+<td>被注释的元素必须为 true</td>
+</tr>
+<tr>
+<td>@AssertFalse</td>
+<td>被注释的元素必须为 false</td>
+</tr>
+<tr>
+<td>@Min(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值</td>
+</tr>
+<tr>
+<td>@Max(value)</td>
+<td>被注释的元素必须是一个数字，其值必须小于等于指定的最大值</td>
+</tr>
+<tr>
+<td>@DecimalMin(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值</td>
+</tr>
+<tr>
+<td>@DecimalMax(value)</td>
+<td>被注释的元素必须是一个数字，其值必须小于等于指定的最大值</td>
+</tr>
+<tr>
+<td>@Size(max, min)</td>
+<td>被注释的元素的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td>@Digits (integer, fraction)</td>
+<td>被注释的元素必须是一个数字，其值必须在可接受的范围内</td>
+</tr>
+<tr>
+<td>@Past</td>
+<td>被注释的元素必须是一个过去的日期</td>
+</tr>
+<tr>
+<td>@Futuret</td>
+<td>被注释的元素必须是一个将来的日期</td>
+</tr>
+<tr>
+<td>@Pattern(value)</td>
+<td>被注释的元素必须符合指定的正则表达式</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Hibernate Validator 附加的 constraint</p>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>详细信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Email</td>
+<td>被注释的元素必须是电子邮箱地址</td>
+</tr>
+<tr>
+<td>@Length</td>
+<td>被注释的字符串的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td>@NotEmpty</td>
+<td>被注释的字符串的必须非空</td>
+</tr>
+<tr>
+<td>@Range</td>
+<td>被注释的元素必须在合适的范围内</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.hibernate<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hibernate-validator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>8.0.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="定义校验规则"><a href="#定义校验规则" class="headerlink" title="定义校验规则"></a>定义校验规则</h2><p><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/img/image-20240423201314654.png" alt="image-20240423201314654"></p>
+<h2 id="添加-Vaild注解"><a href="#添加-Vaild注解" class="headerlink" title="添加@Vaild注解"></a>添加@Vaild注解</h2><p><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/img/image-20240423193729176.png" alt="image-20240423193729176"></p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="校验通过"><a href="#校验通过" class="headerlink" title="校验通过"></a>校验通过</h3><p><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/img/image-20240423194147124.png" alt="image-20240423194147124"></p>
+<h3 id="校验不通过"><a href="#校验不通过" class="headerlink" title="校验不通过"></a>校验不通过</h3><p><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/img/image-20240423195715266.png" alt="image-20240423195715266"></p>
+<h2 id="异常信息封装"><a href="#异常信息封装" class="headerlink" title="异常信息封装"></a>异常信息封装</h2><p>如果只做以上的配置，无法在接口响应中看到异常信息，需要使用<code>BindingResult</code>把<code>MethodArgumentNotValidException</code>异常信息绑定，然后自定义输出。</p>
+<p><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/img/image-20240423204051658.png" alt="image-20240423204051658"></p>
+<blockquote>
+<p><strong>注意</strong>：@Valid或@Validate的参数后必须<strong>紧挨着</strong>一个BindingResult 参数，否则spring会在校验不通过时直接抛出异常。</p>
+</blockquote>
+<p><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/img/image-20240423201138021.png" alt="image-20240423201138021"></p>
+<p><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/img/image-20240423201242233.png" alt="image-20240423201242233"></p>
+<h2 id="全局统一异常处理"><a href="#全局统一异常处理" class="headerlink" title="全局统一异常处理"></a>全局统一异常处理</h2><p>在实际开发中，我们基本每个接口都有入参校验，所以如果每个方法都使用前面的校验方式，还是稍显复杂。</p>
+<p>我们可以通过SpringBoot提供的<code>@RestControllerAdvice</code>和<code>@ControllerAdvice</code> 结合<code>@ExceptionHandler</code>使用完成异常统一处理，需要捕获什么异常通过<code>@ExceptionHandler</code>来指定对应异常类就可以了。</p>
+<blockquote>
+<p><strong>@RestControllerAdvice( @ResponseBody + @ControllerAdvice )</strong></p>
+<ul>
+<li><pre><code>它是一个Controller增强器,可对controller中被@RequestMapping注解的方法加一些逻辑处理。最常用的就是异常处理
+</code></pre>
+</li>
+<li><pre><code>需要配合@ExceptionHandler使用。当将异常抛到controller时,可以对异常进行统一处理，规定返回的json格式或是跳转到一个错误页面。
+</code></pre>
+</li>
+</ul>
+</blockquote>
+<p>这里原则是按照<strong>从小到大异常</strong>进行依次执行。通俗来讲就是当小的异常没有指定捕获时，大的异常包含了此异常就会被执行。比如<code>Exception</code> 异常包含了所有异常类，是所有异常超级父类，当出现没有指定异常时，此时对应捕获了<code>Exception</code>异常的方法会执行。</p>
+<h3 id="Java-Bean入参校验"><a href="#Java-Bean入参校验" class="headerlink" title="Java Bean入参校验"></a>Java Bean入参校验</h3><blockquote>
+<p>在springboot2.3.0以上版本中，<code>MethodArgumentNotValidException</code> extends <code>BindException</code>，<code>BindException extends Exception implements BindingResult</code>，在2.3.0以下的版本中<code>MethodArgumentNotValidException extends Exception</code>，<code>BindException extends Exception implements BindingResult</code>，所以会有form-data入参校验与Json入参校验分开捕获，form-data入参校验与Json入参统一使用<code>bindingresult</code>捕获两种写法。其实这两种都对，大家根据自己的版本来选择合适的写法即可。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Bean入参校验</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> e springboot2.3.0后，MethodArgumentNotValidException extends BindException</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> Response&lt;Void&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@ExceptionHandler(BindException.class)</span></span><br><span class="line"><span class="keyword">public</span> Response&lt;Void&gt; <span class="title function_">handlerBindException</span><span class="params">(BindException e, HttpServletRequest request)</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">requestUri</span> <span class="operator">=</span> request.getRequestURI();</span><br><span class="line">    List&lt;String&gt; messageList = e.getBindingResult()</span><br><span class="line">            .getFieldErrors()</span><br><span class="line">            .stream()</span><br><span class="line">            .map(FieldError::getDefaultMessage)</span><br><span class="line">            .toList();</span><br><span class="line">    <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> String.valueOf(messageList);</span><br><span class="line">    log.error(<span class="string">&quot;[统一异常处理]请求地址:&#123;&#125;, 参数校验异常:&#123;&#125;&quot;</span>, requestUri, message);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>&lt;&gt;(Code.BAD_REQUEST, <span class="literal">null</span>, message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="单一参数入参校验"><a href="#单一参数入参校验" class="headerlink" title="单一参数入参校验"></a>单一参数入参校验</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * requestParam单参数校验（需要在类上面加校验注解 方法上面加不管用的）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> exception ConstraintViolationException extends ValidationException</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> Response&lt;Void&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@ExceptionHandler(ConstraintViolationException.class)</span></span><br><span class="line"><span class="keyword">public</span> Response&lt;Void&gt; <span class="title function_">handlerValidationException</span><span class="params">(ConstraintViolationException exception, HttpServletRequest request)</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">requestUri</span> <span class="operator">=</span> request.getRequestURI();</span><br><span class="line"></span><br><span class="line">    Set&lt;ConstraintViolation&lt;?&gt;&gt; constraintViolations = exception.getConstraintViolations();</span><br><span class="line">    <span class="type">String</span> <span class="variable">validateMsg</span> <span class="operator">=</span> String.valueOf(constraintViolations.stream()</span><br><span class="line">            .map(ConstraintViolation::getMessage)</span><br><span class="line">            .collect(Collectors.toList()));</span><br><span class="line">    log.error(<span class="string">&quot;[统一异常处理]请求地址:&#123;&#125;, 参数校验异常:&#123;&#125;&quot;</span>, requestUri, validateMsg);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>&lt;&gt;(Code.BAD_REQUEST, <span class="literal">null</span>, validateMsg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/xueguchen/article/details/111406671">Java数据校验：JSR-303_jsr303规范-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/he37176427/article/details/107026847">Spring BindingResult获取不到结果可能的原因之一 参数顺序 没有紧挨着校验参数_bindingresult用不了-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yyanghang/p/15245431.html">Spring Boot统一异常处理（JSR303参数校验 + 常见异常） - 亿贫如洗杨道长 - 博客园 (cnblogs.com)</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://wrenxr.github.io">wrenxr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://wrenxr.github.io/2024/04/23/20240423-JSR303/">https://wrenxr.github.io/2024/04/23/20240423-JSR303/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wrenxr.github.io" target="_blank">wrenxr's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java/">java</a></div><div class="post_share"><div class="social-share" data-image="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/JSR303.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/04/18/20240418-Spring%E6%97%A5%E5%BF%97%E5%88%9D%E8%A7%81/" title="Spring日志初见"><img class="cover" src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/covers/logback.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Spring日志初见</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/Penguin-green.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">wrenxr</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/wrenxr"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"><p> 欢迎~ ᖰ⌯'▾'⌯ᖳ <br> 评论需要科学上网和审核(｡ ́︿ ̀｡) </p></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">常用校验注解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-number">3.1.</span> <span class="toc-text">引入依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99"><span class="toc-number">3.2.</span> <span class="toc-text">定义校验规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0-Vaild%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.3.</span> <span class="toc-text">添加@Vaild注解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95"><span class="toc-number">3.4.</span> <span class="toc-text">测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%A1%E9%AA%8C%E9%80%9A%E8%BF%87"><span class="toc-number">3.4.1.</span> <span class="toc-text">校验通过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%A1%E9%AA%8C%E4%B8%8D%E9%80%9A%E8%BF%87"><span class="toc-number">3.4.2.</span> <span class="toc-text">校验不通过</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF%E5%B0%81%E8%A3%85"><span class="toc-number">3.5.</span> <span class="toc-text">异常信息封装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E7%BB%9F%E4%B8%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">3.6.</span> <span class="toc-text">全局统一异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java-Bean%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C"><span class="toc-number">3.6.1.</span> <span class="toc-text">Java Bean入参校验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E4%B8%80%E5%8F%82%E6%95%B0%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C"><span class="toc-number">3.6.2.</span> <span class="toc-text">单一参数入参校验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">3.7.</span> <span class="toc-text">参考链接</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/04/23/20240423-JSR303/" title="JSR303"><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/JSR303.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JSR303"/></a><div class="content"><a class="title" href="/2024/04/23/20240423-JSR303/" title="JSR303">JSR303</a><time datetime="2024-04-23T12:55:38.000Z" title="发表于 2024-04-23 20:55:38">2024-04-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/18/20240418-Spring%E6%97%A5%E5%BF%97%E5%88%9D%E8%A7%81/" title="Spring日志初见"><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/covers/logback.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spring日志初见"/></a><div class="content"><a class="title" href="/2024/04/18/20240418-Spring%E6%97%A5%E5%BF%97%E5%88%9D%E8%A7%81/" title="Spring日志初见">Spring日志初见</a><time datetime="2024-04-18T03:17:59.000Z" title="发表于 2024-04-18 11:17:59">2024-04-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/15/20240415-Windows-11%E4%B8%8B%E5%AE%89%E8%A3%85RabbitMQ/" title="Windows 11下安装RabbitMQ"><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/covers/rabbitmq.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Windows 11下安装RabbitMQ"/></a><div class="content"><a class="title" href="/2024/04/15/20240415-Windows-11%E4%B8%8B%E5%AE%89%E8%A3%85RabbitMQ/" title="Windows 11下安装RabbitMQ">Windows 11下安装RabbitMQ</a><time datetime="2024-04-15T12:02:12.000Z" title="发表于 2024-04-15 20:02:12">2024-04-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/15/20240415-%E9%A2%9C%E6%96%87%E5%AD%97%E5%AD%98%E6%A1%A3/" title="颜文字存档"><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/covers/yanwenzi.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="颜文字存档"/></a><div class="content"><a class="title" href="/2024/04/15/20240415-%E9%A2%9C%E6%96%87%E5%AD%97%E5%AD%98%E6%A1%A3/" title="颜文字存档">颜文字存档</a><time datetime="2024-04-15T03:27:52.000Z" title="发表于 2024-04-15 11:27:52">2024-04-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/15/20240415-%E8%BD%AF%E4%BB%B6%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C%E5%88%9D%E8%A7%81/" title="软件定义网络初见"><img src="https://wrenxr-typora.oss-cn-beijing.aliyuncs.com/blog/covers/network" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="软件定义网络初见"/></a><div class="content"><a class="title" href="/2024/04/15/20240415-%E8%BD%AF%E4%BB%B6%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C%E5%88%9D%E8%A7%81/" title="软件定义网络初见">软件定义网络初见</a><time datetime="2024-04-15T02:16:40.000Z" title="发表于 2024-04-15 10:16:40">2024-04-15</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By wrenxr</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  let initFn = window.walineFn || null
+
+  const initWaline = (Fn) => {
+    const waline = Fn(Object.assign({
+      el: '#waline-wrap',
+      serverURL: 'https://waline-test-livid.vercel.app/',
+      pageview: false,
+      dark: 'html[data-theme="dark"]',
+      path: window.location.pathname,
+      comment: true,
+    }, null))
+
+    const destroyWaline = () => {
+      waline.destroy()
+    }
+
+    btf.addGlobalFn('pjax', destroyWaline, 'destroyWaline')
+  }
+
+  const loadWaline = () => {
+    if (initFn) initWaline(initFn)
+    else {
+      btf.getCSS('https://cdn.jsdelivr.net/npm/@waline/client/dist/waline.min.css')
+        .then(() => import('https://cdn.jsdelivr.net/npm/@waline/client/dist/waline.min.js'))
+        .then(({ init }) => {
+          initFn = init || Waline.init
+          initWaline(initFn)
+          window.walineFn = initFn
+        })
+    }
+  }
+
+  if ('Waline' === 'Waline' || !false) {
+    if (false) btf.loadComment(document.getElementById('waline-wrap'),loadWaline)
+    else setTimeout(loadWaline, 0)
+  } else {
+    window.loadOtherComment = loadWaline
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
